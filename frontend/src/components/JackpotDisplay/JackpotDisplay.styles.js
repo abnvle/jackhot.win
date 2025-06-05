@@ -64,7 +64,7 @@ export const jackpotDisplayStyles = {
     }
   },
   countryHeader: {
-    height: '70px',
+    height: '80px', // Zwiększona wysokość dla lepszego UX
     backgroundSize: 'cover',
     backgroundPosition: 'center',
     backgroundRepeat: 'no-repeat',
@@ -72,17 +72,12 @@ export const jackpotDisplayStyles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    '&::before': {
-      content: '""',
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.9) 0%, rgba(118, 75, 162, 0.9) 50%, rgba(255, 212, 0, 0.1) 100%)',
-      backdropFilter: 'blur(5px)',
-    },
+    cursor: 'pointer',
+    overflow: 'hidden',
+    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+    userSelect: 'none',
+    
+    // Dolny pasek złoty
     '&::after': {
       content: '""',
       position: 'absolute',
@@ -93,39 +88,103 @@ export const jackpotDisplayStyles = {
       background: 'linear-gradient(90deg, transparent 0%, #FFD700 20%, #FFA500 50%, #FFD700 80%, transparent 100%)',
       borderRadius: '2px',
       boxShadow: '0 0 10px rgba(255, 215, 0, 0.6)',
+      zIndex: 3,
     }
   },
+  
+  // Styl dla hovera nagłówka - dynamiczny overlay
+  countryHeaderHover: {
+    '&::before': {
+      background: 'linear-gradient(135deg, rgba(255, 215, 0, 0.2) 0%, rgba(255, 165, 0, 0.3) 100%)',
+    },
+  },
+  
+  // Biały krąg w centrum (tło dla ikonki play)
+  countryHeaderPlayButton: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '60px',
+    height: '60px',
+    background: 'rgba(255, 255, 255, 0.7)',
+    borderRadius: '50%',
+    opacity: 0.8,
+    transition: 'all 0.3s ease',
+    zIndex: 2,
+    boxShadow: '0 4px 20px rgba(0, 0, 0, 0.3)',
+    
+    // Hover effect dla przycisku
+    '&.hovered': {
+      background: 'rgba(255, 255, 255, 0.9)',
+      opacity: 1,
+      transform: 'translate(-50%, -50%) scale(1.1)',
+    }
+  },
+  
+  // Ikonka play w środku
+  countryHeaderPlayIcon: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    zIndex: 4,
+    fontSize: '24px',
+    color: '#666',
+    transition: 'all 0.3s ease',
+    
+    '&::before': {
+      content: '"▶"',
+      fontSize: '20px',
+    },
+    
+    // Hover effect dla ikonki
+    '&.hovered': {
+      color: '#333',
+      transform: 'translate(-50%, -50%) scale(1.2)',
+    }
+  },
+  
+  // Tekst instrukcji przy hover
+  countryHeaderInstructions: {
+    position: 'absolute',
+    bottom: '8px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    zIndex: 5,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    color: 'white',
+    padding: '4px 12px',
+    borderRadius: '12px',
+    fontSize: '0.75rem',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: '1px',
+    opacity: 0,
+    transform: 'translateX(-50%) translateY(10px)',
+    transition: 'all 0.3s ease',
+    
+    // Animacja pojawiania się
+    '&.visible': {
+      opacity: 1,
+      transform: 'translateX(-50%) translateY(0)',
+    }
+  },
+
   countryName: {
     position: 'relative',
-    zIndex: 1,
+    zIndex: 3,
     color: 'white',
     fontWeight: '700',
-    fontSize: '16px',
+    fontSize: { xs: '1.1rem', sm: '1.3rem' },
     fontFamily: '"Poppins", "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
-    textShadow: '0 2px 8px rgba(0,0,0,0.7), 0 0 20px rgba(255,255,255,0.1)',
+    textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
     letterSpacing: '1px',
     textTransform: 'uppercase',
-    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9ff 50%, #e8ecff 100%)',
-    backgroundClip: 'text',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    '&::before': {
-      content: '"🎰"',
-      fontSize: '18px',
-      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
-      WebkitTextFillColor: 'initial',
-    },
-    '&::after': {
-      content: '"💎"',
-      fontSize: '18px',
-      filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
-      WebkitTextFillColor: 'initial',
-    }
+    transition: 'all 0.3s ease',
+    textAlign: 'center',
   },
+  
   jackpotsContainer: {
     p: 2.5,
   },
@@ -218,7 +277,8 @@ export const jackpotDisplayStyles = {
     mt: 2,
     letterSpacing: '0.2px',
   },
-  // Animacje
+  
+  // === ANIMACJE ===
   '@keyframes shimmer': {
     '0%': {
       backgroundPosition: '0% 50%',
@@ -242,6 +302,65 @@ export const jackpotDisplayStyles = {
     '100%': {
       opacity: 1,
       transform: 'translateY(-50%) scale(1)',
+    }
+  },
+  '@keyframes fadeInUp': {
+    'from': {
+      opacity: 0,
+      transform: 'translateX(-50%) translateY(10px)',
+    },
+    'to': {
+      opacity: 1,
+      transform: 'translateX(-50%) translateY(0)',
+    },
+  },
+  '@keyframes scaleIn': {
+    'from': {
+      transform: 'translate(-50%, -50%) scale(0.8)',
+      opacity: 0,
+    },
+    'to': {
+      transform: 'translate(-50%, -50%) scale(1)',
+      opacity: 1,
+    },
+  },
+  '@keyframes bounceIn': {
+    '0%': {
+      transform: 'translate(-50%, -50%) scale(0.3)',
+      opacity: 0,
+    },
+    '50%': {
+      transform: 'translate(-50%, -50%) scale(1.05)',
+      opacity: 0.8,
+    },
+    '70%': {
+      transform: 'translate(-50%, -50%) scale(0.9)',
+    },
+    '100%': {
+      transform: 'translate(-50%, -50%) scale(1)',
+      opacity: 1,
+    },
+  },
+  
+  // === RESPONSYWNE STYLE ===
+  // Dla małych ekranów - zmniejszone efekty
+  '@media (max-width: 768px)': {
+    countryHeader: {
+      height: '70px',
+    },
+    countryHeaderPlayButton: {
+      width: '50px',
+      height: '50px',
+    },
+    countryHeaderPlayIcon: {
+      fontSize: '18px',
+      '&::before': {
+        fontSize: '16px',
+      }
+    },
+    countryHeaderInstructions: {
+      fontSize: '0.7rem',
+      padding: '3px 10px',
     }
   }
 };

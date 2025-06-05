@@ -8,6 +8,43 @@ const JackpotDisplay = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lastUpdate, setLastUpdate] = useState(null);
+  const [hoveredCountry, setHoveredCountry] = useState(null);
+
+  // Mapa krajów z URL-ami aplikacji i flagami
+  const countryUrls = {
+    gambia: 'https://jackhot.gm',
+    guineaBissau: 'https://jackhot.gw',
+    // Dodaj tutaj inne kraje w przyszłości
+  };
+
+  // Mapa flag krajów - poprawione ścieżki
+  const countryFlags = {
+    gambia: '/flags/gambia.png',
+    guineaBissau: '/flags/gwinea_bissau.png', // Poprawiona nazwa pliku
+  };
+
+  // Mapa nazw krajów
+  const countryNames = {
+    gambia: 'Gambia',
+    guineaBissau: 'Guiné-Bissau',
+  };
+
+  // Funkcja obsługi kliknięcia w flagę
+  const handleCountryClick = (countryKey) => {
+    const url = countryUrls[countryKey];
+    if (url) {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  // Funkcje hover dla flag
+  const handleMouseEnter = (countryKey) => {
+    setHoveredCountry(countryKey);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredCountry(null);
+  };
 
   // Funkcja formatowania wartości
   const formatValue = useCallback((value, country) => {
@@ -56,7 +93,7 @@ const JackpotDisplay = () => {
             displayName: typeConfig?.displayName || jackpot.jpName,
             color: typeConfig?.color || '#FFD700',
             colorLight: typeConfig?.color ? `${typeConfig.color}80` : '#FFD70080',
-            icon: typeConfig?.icon, // ← DODANE
+            icon: typeConfig?.icon,
             priority: typeConfig?.priority || 999
           };
         })
@@ -118,20 +155,96 @@ const JackpotDisplay = () => {
   // Renderowanie pojedynczego kraju
   const renderCountryCard = (countryKey, countryData) => {
     const countryConfig = jackpotConfig.countries[countryKey];
+    const isHovered = hoveredCountry === countryKey;
+    const hasUrl = countryUrls[countryKey];
+    const flagUrl = countryFlags[countryKey];
+    const countryDisplayName = countryNames[countryKey];
     
     return (
       <Paper key={countryKey} sx={jackpotDisplayStyles.countryCard}>
+        {/* Nagłówek z flagą jako przycisk */}
         <Box 
+          onClick={() => hasUrl && handleCountryClick(countryKey)}
+          onMouseEnter={() => hasUrl && handleMouseEnter(countryKey)}
+          onMouseLeave={() => hasUrl && handleMouseLeave()}
           sx={{
             ...jackpotDisplayStyles.countryHeader,
-            backgroundImage: `url(${countryConfig.flag})`
+            backgroundImage: flagUrl ? `url(${flagUrl})` : 'none',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            cursor: hasUrl ? 'pointer' : 'default',
+            transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+            // Fallback gradient jeśli flaga się nie załaduje
+            background: flagUrl 
+              ? `url(${flagUrl}) center/cover no-repeat, linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
+              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
           }}
         >
-          <Typography sx={jackpotDisplayStyles.countryName}>
-            {countryConfig.name}
+          {/* Overlay gradient dla lepszej czytelności tekstu */}
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: isHovered 
+                ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.4) 100%)'
+                : 'linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%)',
+              transition: 'all 0.3s ease',
+              zIndex: 1,
+            }}
+          />
+
+          {/* Tekst nazwy kraju z "GO TO APP" */}
+          <Typography 
+            sx={{
+              ...jackpotDisplayStyles.countryName,
+              position: 'relative',
+              zIndex: 3,
+              color: isHovered ? '#FFD700' : 'white',
+              textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+              fontSize: { xs: '1.1rem', sm: '1.3rem' },
+              fontWeight: '700',
+              transition: 'all 0.3s ease',
+              textAlign: 'center',
+              '&::before': {
+                content: '""', // Usuń emoji
+              },
+              '&::after': {
+                content: '""', // Usuń emoji
+              }
+            }}
+          >
+            {countryDisplayName}
           </Typography>
+
+          {/* Dodatkowa ikonka strzałki po prawej stronie */}
+          {hasUrl && (
+            <Box
+              sx={{
+                position: 'absolute',
+                top: '50%',
+                right: '15px',
+                transform: 'translateY(-50%)',
+                zIndex: 4,
+                fontSize: '20px',
+                color: isHovered ? '#FFD700' : 'white',
+                transition: 'all 0.3s ease',
+                opacity: isHovered ? 1 : 0.7,
+                '&::before': {
+                  content: '"→"',
+                  fontSize: '18px',
+                  fontWeight: 'bold',
+                }
+              }}
+            />
+          )}
+
         </Box>
         
+        {/* Kontener z jackpotami */}
         <Box sx={jackpotDisplayStyles.jackpotsContainer}>
           {countryData.jackpots.map((jackpot) => (
             <Box 
@@ -142,7 +255,7 @@ const JackpotDisplay = () => {
                 '--jackpot-color-light': jackpot.colorLight,
               }}
             >
-              {/* DODANE - Renderowanie nazwy z ikonkami */}
+              {/* Renderowanie nazwy z ikonkami */}
               {jackpot.icon ? (
                 <Box component="span" sx={jackpotDisplayStyles.jackpotName}>
                   <Box
@@ -225,7 +338,7 @@ const JackpotDisplay = () => {
           JACKPOT'S LIVE
         </Typography>
         <Typography sx={jackpotDisplayStyles.mainTitleSubtext}>
-          Real-time jackpots
+          Real-time jackpots - Click country header to enter app
         </Typography>
       </Box>
       
