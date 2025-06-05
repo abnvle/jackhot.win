@@ -29,6 +29,16 @@ const JackpotDisplay = () => {
     guineaBissau: 'Guiné-Bissau',
   };
 
+  // Mapa logo płatności dla krajów
+  const countryPayments = {
+    gambia: [
+      { name: 'Wave', logo: '/images/payments/wave.png' }
+    ],
+    guineaBissau: [
+      { name: 'Orange Money', logo: '/images/payments/orange_money.png' }
+    ],
+  };
+
   // Funkcja obsługi kliknięcia w flagę
   const handleCountryClick = (countryKey) => {
     const url = countryUrls[countryKey];
@@ -159,6 +169,7 @@ const JackpotDisplay = () => {
     const hasUrl = countryUrls[countryKey];
     const flagUrl = countryFlags[countryKey];
     const countryDisplayName = countryNames[countryKey];
+    const payments = countryPayments[countryKey] || [];
     
     return (
       <Paper key={countryKey} sx={jackpotDisplayStyles.countryCard}>
@@ -287,6 +298,30 @@ const JackpotDisplay = () => {
           <Typography sx={jackpotDisplayStyles.lastUpdate}>
             Ostatnia aktualizacja: {new Date(countryData.timestamp).toLocaleTimeString()}
           </Typography>
+          
+          {/* Sekcja z płatnościami */}
+          <Box sx={jackpotDisplayStyles.paymentsContainer}>
+            <Typography sx={jackpotDisplayStyles.paymentsLabel}>
+              Payments:
+            </Typography>
+            <Box sx={jackpotDisplayStyles.paymentLogosContainer}>
+              {payments.map((payment, index) => (
+                <Box
+                  key={index}
+                  component="img"
+                  src={payment.logo}
+                  alt={payment.name}
+                  title={payment.name}
+                  sx={jackpotDisplayStyles.paymentLogo}
+                  onError={(e) => {
+                    // Fallback jeśli logo się nie załaduje
+                    e.target.style.display = 'none';
+                    console.error(`Could not load ${payment.name} payment logo`);
+                  }}
+                />
+              ))}
+            </Box>
+          </Box>
         </Box>
       </Paper>
     );

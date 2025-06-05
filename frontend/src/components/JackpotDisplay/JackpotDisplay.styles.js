@@ -192,7 +192,7 @@ export const jackpotDisplayStyles = {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    py: 1.5,
+    py: { xs: 2, sm: 1.5 }, // Większy padding na mobile
     px: 0,
     borderBottom: (theme) => `1px solid ${theme.palette.mode === 'dark' 
       ? 'rgba(255, 255, 255, 0.06)' 
@@ -208,7 +208,7 @@ export const jackpotDisplayStyles = {
   },
   jackpotName: {
     fontWeight: '500',
-    fontSize: '13px',
+    fontSize: { xs: '14px', sm: '13px' }, // Większy na mobile
     fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
     color: (theme) => theme.palette.mode === 'dark' 
       ? 'rgba(255, 255, 255, 0.8)'
@@ -220,8 +220,8 @@ export const jackpotDisplayStyles = {
     gap: '6px',
   },
   jackpotNameIcon: {
-    width: '14px',
-    height: '14px',
+    width: { xs: '16px', sm: '14px' }, // Większy na mobile
+    height: { xs: '16px', sm: '14px' }, // Większy na mobile
     opacity: 0.8,
     filter: (theme) => theme.palette.mode === 'dark' 
       ? 'brightness(1.2)'
@@ -231,7 +231,7 @@ export const jackpotDisplayStyles = {
   },
   jackpotValue: {
     fontWeight: '700',
-    fontSize: '16px',
+    fontSize: { xs: '18px', sm: '16px' }, // Większy na mobile
     fontFamily: '"JetBrains Mono", "SF Mono", "Monaco", "Inconsolata", monospace',
     textAlign: 'right',
     lineHeight: 1.2,
@@ -276,6 +276,44 @@ export const jackpotDisplayStyles = {
       : 'rgba(0, 0, 0, 0.4)',
     mt: 2,
     letterSpacing: '0.2px',
+  },
+
+  // === SEKCJA PŁATNOŚCI ===
+  paymentsContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 1,
+    mt: 2,
+    pt: 1.5,
+    borderTop: (theme) => `1px solid ${theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.06)' 
+      : 'rgba(0, 0, 0, 0.04)'}`,
+  },
+
+  paymentsLabel: {
+    fontSize: '11px',
+    fontFamily: '"Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+    color: (theme) => theme.palette.mode === 'dark' 
+      ? 'rgba(255, 255, 255, 0.5)'
+      : 'rgba(0, 0, 0, 0.5)',
+    fontWeight: '500',
+    textTransform: 'uppercase',
+    letterSpacing: '0.5px',
+  },
+
+  paymentLogo: {
+    height: '16px', // Mniejsza ikona
+    width: 'auto',
+    maxWidth: '40px', // Zmniejszona maksymalna szerokość
+    opacity: 0.7,
+    transition: 'opacity 0.2s ease',
+    filter: (theme) => theme.palette.mode === 'dark' 
+      ? 'brightness(1.1)'
+      : 'brightness(0.9)',
+    '&:hover': {
+      opacity: 0.9,
+    }
   },
   
   // === ANIMACJE ===
