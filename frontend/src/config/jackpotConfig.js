@@ -15,10 +15,18 @@ export const jackpotConfig = {
     guineaBissau: {
       name: 'Guiné-Bissau',
       code: 'GW',
-      endpoint: 'https://app.jackhot.win/frontoffice/rest/jackpot/statuses?barId=89', // ← DODANY ENDPOINT
+      endpoint: 'https://app.jackhot.win/frontoffice/rest/jackpot/statuses?barId=89',
       flag: '/flags/gwinea_bissau.png',
       currency: 'XOF', // Frank CFA
       currencySymbol: 'CFA'
+    },
+    kenya: {
+      name: 'Kenya',
+      code: 'KE',
+      endpoint: 'https://app.jackhot.win/frontoffice/rest/jackpot/statuses?barId=89', // Ten sam endpoint na razie
+      flag: '/flags/kenia.png',
+      currency: 'KES', // Szyling kenijski
+      currencySymbol: 'KSh'
     }
   },
 
@@ -53,7 +61,7 @@ export const jackpotConfig = {
   // Ustawienia formatowania
   formatting: {
     // Liczba miejsc po przecinku
-    decimalPlaces: 2, // ← PRZYWRÓCONE na 2
+    decimalPlaces: 2,
     // Separator tysięcy
     thousandsSeparator: ' ',
     // Separator dziesiętny

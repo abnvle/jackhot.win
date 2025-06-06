@@ -14,19 +14,21 @@ const JackpotDisplay = () => {
   const countryUrls = {
     gambia: 'https://jackhot.gm',
     guineaBissau: 'https://jackhot.gw',
-    // Dodaj tutaj inne kraje w przyszłości
+    kenya: 'https://jackhot.ke', // Domyślny URL dla Kenii
   };
 
-  // Mapa flag krajów - poprawione ścieżki
+  // Mapa flag krajów
   const countryFlags = {
     gambia: '/flags/gambia.png',
-    guineaBissau: '/flags/gwinea_bissau.png', // Poprawiona nazwa pliku
+    guineaBissau: '/flags/gwinea_bissau.png',
+    kenya: '/flags/kenia.png',
   };
 
   // Mapa nazw krajów
   const countryNames = {
     gambia: 'Gambia',
     guineaBissau: 'Guiné-Bissau',
+    kenya: 'Kenya',
   };
 
   // Mapa logo płatności dla krajów
@@ -36,6 +38,9 @@ const JackpotDisplay = () => {
     ],
     guineaBissau: [
       { name: 'Orange Money', logo: '/images/payments/orange_money.png' }
+    ],
+    kenya: [
+      { name: 'ZaxPesa', logo: '/images/payments/zaxpesa.jpeg' }
     ],
   };
 
@@ -173,26 +178,24 @@ const JackpotDisplay = () => {
     
     return (
       <Paper key={countryKey} sx={jackpotDisplayStyles.countryCard}>
-        {/* Nagłówek z flagą jako przycisk */}
+        {/* Nagłówek z flagą i nazwą kraju */}
         <Box 
           onClick={() => hasUrl && handleCountryClick(countryKey)}
           onMouseEnter={() => hasUrl && handleMouseEnter(countryKey)}
           onMouseLeave={() => hasUrl && handleMouseLeave()}
           sx={{
             ...jackpotDisplayStyles.countryHeader,
-            backgroundImage: flagUrl ? `url(${flagUrl})` : 'none',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
             cursor: hasUrl ? 'pointer' : 'default',
             transform: isHovered ? 'scale(1.02)' : 'scale(1)',
-            // Fallback gradient jeśli flaga się nie załaduje
-            background: flagUrl 
-              ? `url(${flagUrl}) center/cover no-repeat, linear-gradient(135deg, #667eea 0%, #764ba2 100%)`
-              : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            background: 'transparent', // Przezroczyste tło
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2,
+            py: 2,
           }}
         >
-          {/* Overlay gradient dla lepszej czytelności tekstu */}
+          {/* Gradient overlay dla lepszego kontrastu */}
           <Box
             sx={{
               position: 'absolute',
@@ -201,58 +204,85 @@ const JackpotDisplay = () => {
               right: 0,
               bottom: 0,
               background: isHovered 
-                ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 165, 0, 0.4) 100%)'
-                : 'linear-gradient(135deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.2) 100%)',
+                ? 'linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 165, 0, 0.15) 100%)'
+                : 'linear-gradient(135deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.1) 100%)',
               transition: 'all 0.3s ease',
               zIndex: 1,
+              borderRadius: '12px 12px 0 0',
             }}
           />
 
-          {/* Tekst nazwy kraju z "GO TO APP" */}
+          {/* Flaga kraju */}
+          <Box
+            component="img"
+            src={flagUrl}
+            alt={`${countryDisplayName} flag`}
+            sx={{
+              width: { xs: '40px', sm: '48px' },
+              height: { xs: '28px', sm: '32px' },
+              borderRadius: '4px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.2)',
+              border: '2px solid rgba(255, 255, 255, 0.8)',
+              objectFit: 'cover',
+              transition: 'all 0.3s ease',
+              zIndex: 2,
+              position: 'relative',
+              ...(isHovered && {
+                transform: 'scale(1.05)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                border: '2px solid rgba(255, 215, 0, 0.8)',
+              })
+            }}
+            onError={(e) => {
+              // Fallback jeśli flaga się nie załaduje
+              e.target.style.display = 'none';
+            }}
+          />
+
+          {/* Nazwa kraju */}
           <Typography 
             sx={{
-              ...jackpotDisplayStyles.countryName,
               position: 'relative',
               zIndex: 3,
-              color: isHovered ? '#FFD700' : 'white',
-              textShadow: '2px 2px 4px rgba(0,0,0,0.8)',
+              color: (theme) => theme.palette.mode === 'dark' 
+                ? (isHovered ? '#FFD700' : 'rgba(255, 255, 255, 0.9)')
+                : (isHovered ? '#FF8C00' : 'rgba(0, 0, 0, 0.8)'),
+              textShadow: (theme) => theme.palette.mode === 'dark'
+                ? '2px 2px 4px rgba(0,0,0,0.8)'
+                : '1px 1px 2px rgba(255,255,255,0.8)',
               fontSize: { xs: '1.1rem', sm: '1.3rem' },
               fontWeight: '700',
               transition: 'all 0.3s ease',
               textAlign: 'center',
-              '&::before': {
-                content: '""', // Usuń emoji
-              },
-              '&::after': {
-                content: '""', // Usuń emoji
-              }
+              fontFamily: '"Poppins", "Inter", "SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif',
+              letterSpacing: '0.5px',
+              textTransform: 'uppercase',
             }}
           >
             {countryDisplayName}
           </Typography>
 
-          {/* Dodatkowa ikonka strzałki po prawej stronie */}
+          {/* Ikonka strzałki po prawej stronie */}
           {hasUrl && (
             <Box
               sx={{
-                position: 'absolute',
-                top: '50%',
-                right: '15px',
-                transform: 'translateY(-50%)',
+                position: 'relative',
                 zIndex: 4,
-                fontSize: '20px',
-                color: isHovered ? '#FFD700' : 'white',
+                fontSize: '18px',
+                color: (theme) => theme.palette.mode === 'dark' 
+                  ? (isHovered ? '#FFD700' : 'rgba(255, 255, 255, 0.7)')
+                  : (isHovered ? '#FF8C00' : 'rgba(0, 0, 0, 0.6)'),
                 transition: 'all 0.3s ease',
                 opacity: isHovered ? 1 : 0.7,
+                transform: isHovered ? 'translateX(4px)' : 'translateX(0)',
                 '&::before': {
                   content: '"→"',
-                  fontSize: '18px',
+                  fontSize: '16px',
                   fontWeight: 'bold',
                 }
               }}
             />
           )}
-
         </Box>
         
         {/* Kontener z jackpotami */}
@@ -302,7 +332,7 @@ const JackpotDisplay = () => {
           {/* Sekcja z płatnościami */}
           <Box sx={jackpotDisplayStyles.paymentsContainer}>
             <Typography sx={jackpotDisplayStyles.paymentsLabel}>
-              Payments:
+             
             </Typography>
             <Box sx={jackpotDisplayStyles.paymentLogosContainer}>
               {payments.map((payment, index) => (
@@ -312,7 +342,7 @@ const JackpotDisplay = () => {
                   src={payment.logo}
                   alt={payment.name}
                   title={payment.name}
-                  sx={jackpotDisplayStyles.paymentLogo}
+                  sx={jackpotDisplayStyles.paymentLogoOriginal}
                   onError={(e) => {
                     // Fallback jeśli logo się nie załaduje
                     e.target.style.display = 'none';
@@ -339,7 +369,7 @@ const JackpotDisplay = () => {
             }}
           />
           <Typography sx={jackpotDisplayStyles.loadingText}>
-            Ładowanie jackpotów...
+            Loading jackpot's...
           </Typography>
         </Box>
       </Box>
@@ -355,7 +385,7 @@ const JackpotDisplay = () => {
           variant="outlined"
         >
           <Typography variant="h6" gutterBottom>
-            Błąd podczas ładowania jackpotów
+            Error loading jackpots
           </Typography>
           <Typography variant="body2">
             {error}
